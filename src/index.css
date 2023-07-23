@@ -80,8 +80,10 @@
     }
 
     @media (prefers-reduced-motion: no-preference) {
+    
     }
     .slide {
         padding: 2rem;
     }
+
 }

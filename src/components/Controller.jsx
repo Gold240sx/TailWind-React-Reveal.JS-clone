@@ -5,30 +5,35 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 import lottie from "lottie-web"
 import { defineElement } from "lord-icon-element"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 
 // define "lord-icon" custom element with default properties
 defineElement(lottie.loadAnimation)
 
-const Controller = ({ slide: Slide, setSlide, totalSlides, disabled, uiColor }) => {
-    const isLeftArrowDisabled = () => { return Slide <= 1}
-	const isRightArrowDisabled = () => { return Slide === totalSlides}
-    const handleArrowClick = (delta) => {
-            if (Slide >= 1 && Slide <= (totalSlides)) {
-                setSlide(Slide + delta)
-            } else {
-                    console.log(Slide, delta, totalSlides)
-                console.log("disabled")
-            }
-    }
-    useEffect(() => {
-        if (Slide <= 0) {
-            setSlide(1)
-        }
-        if (Slide >= totalSlides) {
-            setSlide(totalSlides)
-        }
-    }, [Slide])
+const Controller = ({ slide: Slide, setSlide, prev, setPrev, totalSlides, disabled, btnClicked, setBtnClicked, uiColor }) => {
+	const isLeftArrowDisabled = () => {
+		return Slide <= 1
+	}
+	const isRightArrowDisabled = () => {
+		return Slide === totalSlides
+	}
+	const handleArrowClick = (delta) => {
+		if (Slide === 1 && delta === -1) {
+			return
+		} else if (Slide === totalSlides && delta === 1) {
+			return
+		} else if (Slide >= 1 && Slide <= totalSlides) {
+			setSlide(Slide + delta)
+		} else {
+			console.log(Slide, delta, totalSlides)
+			console.log("disabled")
+		}
+	}
+	useEffect(() => {
+		console.log("prev, slide", prev, Slide)
+		setPrev(Slide)
+		console.log("btnClicked", btnClicked)
+	}, [Slide])
 
 	return (
 		<div className="controller-container absolute text-4xl  p-1 w-[5.8rem] h-28 left-auto right-4 top-auto bottom-4">
@@ -67,45 +72,51 @@ const Controller = ({ slide: Slide, setSlide, totalSlides, disabled, uiColor }) 
 				</div> */}
 				<div className="horizontal justify-between pointer-events-none flex absolute h-full w-full my-auto align-middle items-center mb-2 mt-1.5">
 					<div
-						className={`left cursor-pointer w-fit pointer-events-auto hover:bg-gradient-radial from-black/60 via-transparent to-transparent rounded-full h-fit aspect-square hover:scale-110 hover:mt-0.5 duration-300 ease-in-out transition-all ${
+						className={`left w-fit pointer-events-auto hover:bg-gradient-radial from-black/60 via-transparent to-transparent rounded-full h-fit aspect-square hover:scale-110 hover:mt-0.5 duration-300 ease-in-out transition-all ${
 							isLeftArrowDisabled(Slide)
 								? disabled === "50Percent"
 									? "opacity-50 cursor-not-allowed bg-gray-500/10" // disabled set to 50% opacity
-									: "opacity-0" // disabled set to hidden
+									: "opacity-0 " // disabled set to hidden
 								: "opacity-100 cursor-pointer text-sky-500 hover:text-sky-400"
 						}`}
 						disabled={isLeftArrowDisabled(Slide)}
-						onClick={() => handleArrowClick(-1)}>
+						onClick={() => {
+							handleArrowClick(-1)
+							setBtnClicked("left")
+						}}>
 						<FontAwesomeIcon
 							icon={faChevronLeft}
 							className={
 								isLeftArrowDisabled(Slide)
 									? disabled === "50Percent"
-										? "opacity-50 cursor-not-allowed bg-gray-500/10" // disabled set to 50% opacity
-										: "opacity-0" // disabled set to hidden
+										? "opacity-50 cursor-not-allowed bg-gray-500/10 h-0 w-0 ml-96" // disabled set to 50% opacity
+										: "opacity-0 " // disabled set to hidden
 									: "opacity-100 cursor-pointer text-sky-500 hover:-translate-x-1 duration-300 ease-in-out transition-all hover:text-sky-400 active:scale-100"
 							}
 						/>
 						<div className="arrow-left" />
 					</div>
 					<div
-						className={`right cursor-pointer w-fit pointer-events-auto hover:translate-x-1 hover:bg-gradient-radial from-black/60 via-transparent to-transparent rounded-full h-fit aspect-square hover:scale-110 hover:mt-0.5 duration-300 ease-in-out transition-all ${
+						className={`right w-fit pointer-events-auto hover:translate-x-1 hover:bg-gradient-radial from-black/60 via-transparent to-transparent rounded-full h-fit aspect-square hover:scale-110 hover:mt-0.5 duration-300 ease-in-out transition-all ${
 							isRightArrowDisabled(Slide)
 								? disabled === "50Percent"
 									? "opacity-50 cursor-not-allowed bg-gray-500/10" // disabled set to 50% opacity
-									: "opacity-0" // disabled set to hidden
+									: "opacity-0 " // disabled set to hidden
 								: "opacity-100 "
 						}`}
 						disabled={isRightArrowDisabled(Slide)}
-						onClick={() => handleArrowClick(1)}>
+						onClick={() => {
+							handleArrowClick(1)
+							setBtnClicked("right")
+						}}>
 						<FontAwesomeIcon
 							icon={faChevronRight}
 							className={
 								isRightArrowDisabled(Slide)
 									? disabled === "50Percent"
 										? "opacity-50 cursor-not-allowed bg-gray-500/10" // disabled set to 50% opacity
-										: "opacity-0" // disabled set to hidden
-									: "opacity-100 cursor-pointer text-sky-500 duration-300 ease-in-out transition-all hover:text-sky-400 active:scale-100"
+										: "opacity-0 " // disabled set to hidden
+									: "cursor-pointer opacity-100 text-sky-500 duration-300 ease-in-out transition-all hover:text-sky-400 active:scale-100"
 							}
 						/>
 						<div className="arrow-right" />

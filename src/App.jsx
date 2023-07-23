@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import ProgressBar from "./components/progressBar"
 import Controller from "./components/Controller"
 import Slides from "./components/Slides"
@@ -12,8 +12,15 @@ const Deck = [
 ]
 
 function App() {
+	const [prev, setPrev] = useState(0)
 	const [slide, setSlide] = useState(1)
 	const [totalSlides, setTotalSlides] = useState(Deck.length)
+	const [btnClicked, setBtnClicked] = useState("load")
+
+	const transition = {
+		duration: 0.5,
+		ease: "easeInOut",
+	}
 
 	const slideshowOptions = {
 		pageCounter: true,
@@ -28,19 +35,29 @@ function App() {
 
 	return (
 		<>
-			<div className="grid text-center h-screen items-center">
-				<div className="slide-container mb-1 relative h-full">
+			<div className="grid items-center h-screen text-center">
+				<div className={` relative h-full mb-1 slide-container`}>
 					{Slides.map((Slide, index) => {
 						const isCurrent = index === slide - 1
-
 						return (
 							<motion.div
 								key={index}
-								initial={{ opacity: 0 }}
-								animate={isCurrent ? { opacity: 1 } : { opacity: 0 }}
-								transition={{ duration: 3 }}
+								initial={{
+									opacity: 0,
+									translateX: btnClicked === "load" ? null : btnClicked === "left" ? "100%" : "-100%",
+								}}
+								animate={
+									isCurrent
+										? {
+												opacity: 1,
+												translateX: btnClicked === "load" ? null : btnClicked === "left" ? "0%" : "0%",
+										  }
+										: { opacity: 0 }
+								}
+								transition={{ duration: 0.5, easeInOut: "easeInOut" }}
+								exit={{ translateX: btnClicked === "left" ? "100%" : "-100%" }}
 								className={` ${isCurrent ? "h-full" : "h-0"}`}>
-								{isCurrent && <Slide className="slide h-full" />}
+								<Slide className="h-full slide" />
 							</motion.div>
 						)
 					})}
@@ -49,10 +66,14 @@ function App() {
 					<Controller
 						slide={slide}
 						setSlide={setSlide}
+						prev={prev}
+						setPrev={setPrev}
+						btnClicked={btnClicked}
+						setBtnClicked={setBtnClicked}
 						totalSlides={totalSlides}
 						uiColor={uiColor}
 						disabled={disabled}
-						className="right-6 bottom-14 w-fit h-fit fixed "
+						className="fixed right-6 bottom-14 w-fit h-fit "
 					/>
 				)}
 				{progressBar && (
