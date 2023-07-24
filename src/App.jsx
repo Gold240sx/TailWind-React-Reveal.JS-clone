@@ -3,18 +3,11 @@ import ProgressBar from "./components/progressBar"
 import Controller from "./components/Controller"
 import Slides from "./components/Slides"
 import { motion, AnimatePresence } from "framer-motion"
-import { CSSTransition } from "react-transition-group"
-
-const Deck = [
-	{ name: "test1", id: 1 },
-	{ name: "test2", id: 2 },
-	{ name: "test3", id: 3 },
-]
 
 function App() {
 	const [prev, setPrev] = useState(0)
 	const [slide, setSlide] = useState(1)
-	const [totalSlides, setTotalSlides] = useState(Deck.length)
+	const [totalSlides, setTotalSlides] = useState(Slides.length)
 	const [btnClicked, setBtnClicked] = useState("load")
 
 	const transition = {
@@ -29,35 +22,52 @@ function App() {
 		uiColor: "#42AEF8",
 		//  disabled slides cause controls: Either  50% opacity (50Percent) and gray or 0% opacity(hidden),
 		disabled: "hidden",
+		verticalSlides: false,
 	}
 
-	const { pageCounter, progressBar, controller, uiColor, disabled } = slideshowOptions
+	const { pageCounter, progressBar, controller, uiColor, disabled, verticalSlides } = slideshowOptions
+
+	const translation = () => {
+		if (btnClicked === "load") {
+			return "0"
+		} else if (btnClicked === "left") {
+			return "100%"
+		} else if (btnClicked === "right") {
+			return "-100%"
+		} else if (btnClicked === "up") {
+			return "-100%"
+		} else if (btnClicked === "down") {
+			return "100%"
+		}
+	}
 
 	return (
 		<>
-			<div className="grid items-center h-screen text-center">
-				<div className={` relative h-full mb-1 slide-container`}>
+			<div className="flex justify-center w-screen h-screen p-0 m-0 text-center">
+				<div className={`relative h-full slide-container w-full p-0 m-0`}>
 					{Slides.map((Slide, index) => {
 						const isCurrent = index === slide - 1
+						// console.log("btnClicked", btnClicked)
+						// console.log(btnClicked === "right")
 						return (
 							<motion.div
-								key={index}
+								key={slide.id}
 								initial={{
 									opacity: 0,
-									translateX: btnClicked === "load" ? null : btnClicked === "left" ? "100%" : "-100%",
+									translateX: translation(),
 								}}
 								animate={
 									isCurrent
 										? {
 												opacity: 1,
-												translateX: btnClicked === "load" ? null : btnClicked === "left" ? "0%" : "0%",
+												translateX: "0",
 										  }
-										: { opacity: 0 }
+										: {}
 								}
-								transition={{ duration: 0.5, easeInOut: "easeInOut" }}
-								exit={{ translateX: btnClicked === "left" ? "100%" : "-100%" }}
-								className={` ${isCurrent ? "h-full" : "h-0"}`}>
-								<Slide className="h-full slide" />
+								transition={{ transition }}
+								exit={{ translateX: translation(), opacity: 0 }}
+								className={` absolute top-0  w-screen h-screen  p-0 m-0`}>
+								<Slide className="w-full h-full p-0 m-0 slide" />
 							</motion.div>
 						)
 					})}
@@ -73,6 +83,7 @@ function App() {
 						totalSlides={totalSlides}
 						uiColor={uiColor}
 						disabled={disabled}
+						verticalSlides={verticalSlides}
 						className="fixed right-6 bottom-14 w-fit h-fit "
 					/>
 				)}
