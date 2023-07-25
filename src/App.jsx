@@ -3,6 +3,7 @@ import ProgressBar from "./components/progressBar"
 import Controller from "./components/Controller"
 import Slides from "./components/Slides"
 import { motion, AnimatePresence } from "framer-motion"
+import MusicPlayer from "./components/MusicPlayer"
 
 function App() {
 	const [prev, setPrev] = useState(0)
@@ -43,7 +44,7 @@ function App() {
 
 	return (
 		<>
-			<div className="flex justify-center w-screen h-screen p-0 m-0 text-center">
+			<div className="flex justify-center w-screen h-screen max-h-screen p-0 m-0 overflow-y-hidden text-center">
 				<div className={`relative h-full slide-container w-full p-0 m-0`}>
 					{Slides.map((Slide, index) => {
 						const isCurrent = index === slide - 1
@@ -87,6 +88,7 @@ function App() {
 						className="fixed right-6 bottom-14 w-fit h-fit "
 					/>
 				)}
+				<MusicPlayer />
 				{progressBar && (
 					<ProgressBar Slide={slide} setSlide={setSlide} totalSlides={totalSlides} uiColor={uiColor} pageCounter={pageCounter} />
 				)}
