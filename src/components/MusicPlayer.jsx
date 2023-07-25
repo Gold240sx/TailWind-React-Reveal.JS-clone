@@ -3,7 +3,9 @@ import { library } from "@fortawesome/fontawesome-svg-core"
 import { faPlay, faPause } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import tinyAdventure from "../assets/Music/tinyAdventure.mp3"
+import tinyAdventureCover from "../assets/Music/covers/tiny-adventure.jpg"
 import positiveWay from "../assets/Music/positiveWay.mp3"
+import positiveWayCover from "../assets/Music/covers/positive-way.jpg"
 library.add(faPlay, faPause)
 
 const Playlist = [
@@ -12,12 +14,14 @@ const Playlist = [
 		title: "Tiny Adventure",
 		artist: "Bensound",
 		source: tinyAdventure,
+		cover: tinyAdventureCover,
 	},
 	{
 		id: 2,
 		title: "Positive Way",
 		artist: "Bensound",
 		source: positiveWay,
+		cover: positiveWayCover,
 	},
 ]
 
@@ -38,6 +42,7 @@ const MusicPlayer = () => {
 				setTrackNo(0)
 			} else {
 				setTrackNo(trackNo + 1)
+				audio.src = Playlist[trackNo].source
 			}
 		})
 
@@ -51,7 +56,6 @@ const MusicPlayer = () => {
 		const audio = audioRef.current
 
 		// Update the audio source and metadata when trackNo changes
-		audio.src = Playlist[trackNo].source
 		setSong(Playlist[trackNo].title)
 		setArtist(Playlist[trackNo].artist)
 
@@ -95,17 +99,22 @@ const MusicPlayer = () => {
 	}, [isPlaying]) // Listen for changes to isPlaying to update progress
 
 	return (
-		<div className="fixed items-center flex m-0 align-bottom select-none left-8 bottom-[2rem] h-12 hover:w-[200px] delay-700 group transition-all duration-700 ease-in-out">
-			<div className="absolute flex-col items-center justify-center w-0 h-full pt-1 overflow-hidden text-left align-middle transition-all duration-300 ease-in-out bg-black rounded-l-none group-hover:w-3/4 left-10 rounded-3xl">
-				<h1 className="ml-5 text-sm transition-all duration-150 ease-in delay-150 opacity-0 overflow-ellipsis group-hover:opacity-100 whitespace-nowrap">
-					{song}
-				</h1>
-				<p className="ml-5 text-xs font-bold transition-all duration-150 ease-in delay-150 opacity-0 text-slate-500 overflow-ellipsis group-hover:opacity-100 whitespace-nowrap">
-					{artist}
-				</p>
-				<audio ref={audioRef} src={Playlist[trackNo].source} />
-				<div className="absolute bottom-0 z-10 w-full h-0.5 bg-gray-500">
-					<div className="h-full bg-sky-500" style={{ width: `${progress}%` }}></div>
+		<div className="fixed items-center flex m-0 align-bottom select-none left-8 bottom-[2rem] h-12 hover:w-[230px] delay-700 group transition-all duration-700 ease-in-out">
+			<div className="absolute flex items-center justify-center w-0 h-full pt-1 overflow-hidden text-left align-middle transition-all duration-300 ease-in-out bg-black rounded-l-none group-hover:w-3/4 left-10 rounded-3xl">
+				<div className="flex-col mb-2 ml-6">
+					<h1 className="text-sm transition-all duration-150 ease-in delay-150 opacity-0 overflow-ellipsis group-hover:opacity-100 whitespace-nowrap">
+						{song}
+					</h1>
+					<p className="text-xs font-bold transition-all duration-150 ease-in delay-150 opacity-0 text-slate-500 overflow-ellipsis group-hover:opacity-100 whitespace-nowrap">
+						{artist}
+					</p>
+					<audio ref={audioRef} src={Playlist[trackNo].source} />
+					<div className="absolute bottom-0 left-0 z-10 w-full h-1 bg-gray-500">
+						<div className="h-full bg-sky-500" style={{ width: `${progress}%` }}></div>
+					</div>
+				</div>
+				<div className="object-cover mb-1 ml-auto mr-[7px] overflow-hidden transition-all duration-150 ease-in delay-150 rounded-full opacity-0 w-9 h-9 album-art group-hover:opacity-100">
+					<img src={Playlist[trackNo].cover} alt="Album cover" />
 				</div>
 			</div>
 			<div
