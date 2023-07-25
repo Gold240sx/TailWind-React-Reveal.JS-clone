@@ -24,9 +24,10 @@ function App() {
 		//  disabled slides cause controls: Either  50% opacity (50Percent) and gray or 0% opacity(hidden),
 		disabled: "hidden",
 		verticalSlides: false,
+		musicPlayer: true,
 	}
 
-	const { pageCounter, progressBar, controller, uiColor, disabled, verticalSlides } = slideshowOptions
+	const { pageCounter, progressBar, controller, uiColor, disabled, verticalSlides, musicPlayer } = slideshowOptions
 
 	const translation = () => {
 		if (btnClicked === "load") {
@@ -47,9 +48,6 @@ function App() {
 			<div className="flex justify-center w-screen h-screen max-h-screen p-0 m-0 overflow-y-hidden text-center">
 				<div className={`relative h-full slide-container w-full p-0 m-0`}>
 					{Slides.map((Slide, index) => {
-						const isCurrent = index === slide - 1
-						// console.log("btnClicked", btnClicked)
-						// console.log(btnClicked === "right")
 						return (
 							<motion.div
 								key={slide.id}
@@ -58,7 +56,7 @@ function App() {
 									translateX: translation(),
 								}}
 								animate={
-									isCurrent
+									index === slide - 1
 										? {
 												opacity: 1,
 												translateX: "0",
@@ -88,7 +86,7 @@ function App() {
 						className="fixed right-6 bottom-14 w-fit h-fit "
 					/>
 				)}
-				<MusicPlayer />
+				{musicPlayer && <MusicPlayer />}
 				{progressBar && (
 					<ProgressBar Slide={slide} setSlide={setSlide} totalSlides={totalSlides} uiColor={uiColor} pageCounter={pageCounter} />
 				)}
