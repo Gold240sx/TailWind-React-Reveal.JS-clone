@@ -23,7 +23,7 @@ function App() {
 		uiColor: "#42AEF8",
 		//  disabled slides cause controls: Either  50% opacity (50Percent) and gray or 0% opacity(hidden),
 		disabled: "hidden",
-		verticalSlides: false,
+		verticalSlides: true,
 		musicPlayer: true,
 	}
 
@@ -37,9 +37,9 @@ function App() {
 		} else if (btnClicked === "right") {
 			return "-100%"
 		} else if (btnClicked === "up") {
-			return "-100%"
+			return
 		} else if (btnClicked === "down") {
-			return "100%"
+			return
 		}
 	}
 
@@ -65,7 +65,7 @@ function App() {
 								}
 								transition={{ transition }}
 								exit={{ translateX: translation(), opacity: 0 }}
-								className={` absolute top-0  w-screen h-screen  p-0 m-0`}>
+								className={`absolute top-0  w-screen h-screen  p-0 m-0`}>
 								<Slide className="w-full h-full p-0 m-0 slide" />
 							</motion.div>
 						)
