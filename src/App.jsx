@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react"
+import React, { useState, useEffect } from "react"
+import { Mapper } from "./utilites/Mapper"
 import ProgressBar from "./components/progressBar"
 import Controller from "./components/Controller"
 import Slides from "./components/Slides"
@@ -10,6 +11,11 @@ function App() {
 	const [slide, setSlide] = useState(1)
 	const [totalSlides, setTotalSlides] = useState(Slides.length)
 	const [btnClicked, setBtnClicked] = useState("load")
+	const [map, setMap] = useState(
+		Slides.map((slides, index) => {
+			return parseFloat(index + 1).toFixed(0)
+		})
+	)
 
 	const transition = {
 		duration: 0.5,
@@ -23,11 +29,12 @@ function App() {
 		uiColor: "#42AEF8",
 		//  disabled slides cause controls: Either  50% opacity (50Percent) and gray or 0% opacity(hidden),
 		disabled: "hidden",
+		linearControls: true,
 		verticalSlides: true,
 		musicPlayer: true,
 	}
 
-	const { pageCounter, progressBar, controller, uiColor, disabled, verticalSlides, musicPlayer } = slideshowOptions
+	const { pageCounter, progressBar, controller, uiColor, disabled, verticalSlides, musicPlayer, linearControls } = slideshowOptions
 
 	const translation = () => {
 		if (btnClicked === "load") {
@@ -43,14 +50,23 @@ function App() {
 		}
 	}
 
+	useEffect(() => {
+		// Create map array of all slides. (horizontal slides as whole numbers and
+		// vertcal slide children as decimals)
+		//This defines the boundaries of controls and progress bar
+		setMap(Mapper(map))
+		// console.log(map) Preview only - may result in unloaded state.
+	}, [])
+
 	return (
 		<>
 			<div className="flex justify-center w-screen h-screen max-h-screen p-0 m-0 overflow-y-hidden text-center">
-				<div className={`relative h-full slide-container w-full p-0 m-0`}>
-					{Slides.map((Slide, index) => {
+				<div className={`relative h-full pres-container w-full p-0 m-0 `}>
+					{Slides.map((SlideContainer, index) => {
 						return (
 							<motion.div
 								key={slide.id}
+								id={index + 1}
 								initial={{
 									opacity: 0,
 									translateX: translation(),
@@ -66,7 +82,8 @@ function App() {
 								transition={{ transition }}
 								exit={{ translateX: translation(), opacity: 0 }}
 								className={`absolute top-0  w-screen h-screen  p-0 m-0`}>
-								<Slide className="w-full h-full p-0 m-0 slide" />
+								{/* Slide container may contain a single Slide or a Vertical Slide, hence a  slide container here */}
+								<SlideContainer />
 							</motion.div>
 						)
 					})}
@@ -75,6 +92,8 @@ function App() {
 					<Controller
 						slide={slide}
 						setSlide={setSlide}
+						map={map}
+						linearControls={linearControls}
 						prev={prev}
 						setPrev={setPrev}
 						btnClicked={btnClicked}
@@ -88,7 +107,14 @@ function App() {
 				)}
 				{musicPlayer && <MusicPlayer />}
 				{progressBar && (
-					<ProgressBar Slide={slide} setSlide={setSlide} totalSlides={totalSlides} uiColor={uiColor} pageCounter={pageCounter} />
+					<ProgressBar
+						Slide={slide}
+						setSlide={setSlide}
+						totalSlides={totalSlides}
+						map={map}
+						uiColor={uiColor}
+						pageCounter={pageCounter}
+					/>
 				)}
 			</div>
 		</>

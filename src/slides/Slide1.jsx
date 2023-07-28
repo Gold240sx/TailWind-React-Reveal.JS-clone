@@ -1,7 +1,12 @@
 import React from "react"
+import Slide from "../components/Slide.jsx"
 
 const Slide1 = () => {
-	return <div className="text-white w-full h-full bg-red-600">Slide1</div>
+	return (
+		<Slide>
+			<div className="w-full h-full text-white bg-red-600">Slide 1</div>
+		</Slide>
+	)
 }
 
 export default Slide1

@@ -17,6 +17,8 @@ defineElement(lottie.loadAnimation)
 		const Controller = ({
 			slide: Slide,
 			setSlide,
+			map,
+			linearControls,
 			prev,
 			setPrev,
 			totalSlides,
@@ -30,21 +32,27 @@ defineElement(lottie.loadAnimation)
 				!isDecimal(Slide) ? setSlide(Math.floor(Slide)) : setSlide(Slide)
 			}, [Slide])
 
+			totalSlides = Math.max(...map)
+
 			const isLeftArrowDisabled = () => {
 				return Slide <= 1
 			}
 			const isRightArrowDisabled = () => {
-				return Slide >= Math.floor(totalSlides)
+				// end result "false" means it will show the arrow
+				// linear controls true means that it will hide the arrow if a vertical slide is available
+				return (
+					(linearControls && map.includes(Math.round((parseFloat(Slide) + 0.1) * 1e12) / 1e12)) ||
+					Math.round((parseFloat(Slide) + 1) * 1e12) / 1e12 >= totalSlides
+				)
 			}
 			const isUpArrowDisabled = () => {
-				return Slide <= 1
+				return !map.includes(Math.round((parseFloat(Slide) - 0.1) * 1e12) / 1e12)
 			}
 			const isDownArrowDisabled = () => {
-				return Slide >= Math.floor(totalSlides)
+				return !map.includes(Math.round((parseFloat(Slide) + 0.1) * 1e12) / 1e12)
 			}
 
 			const handleArrowClick = (delta) => {
-				// check if integer is 00 or 0 and convert to the whole number
 				if (!isDecimal(Slide)) {
 					setSlide(Math.floor(Slide))
 				}
@@ -59,7 +67,7 @@ defineElement(lottie.loadAnimation)
 						setSlide(1)
 						return
 					}
-				} else if (Math.floor(parseFloat(Slide)) >= totalSlides && (delta === 1 || delta === "v1")) {
+				} else if (Math.floor(parseFloat(Slide)) >= totalSlides && delta === 1) {
 					if (Math.floor(parseFloat(Slide)) >= totalSlides) {
 						setSlide(Math.floor(totalSlides).toFixed(1))
 						return
@@ -91,9 +99,7 @@ defineElement(lottie.loadAnimation)
 				}
 			}
 			useEffect(() => {
-				// console.log("prev, slide", prev, Slide)
 				setPrev(Slide)
-				// console.log("btnClicked", btnClicked)
 			}, [Slide])
 
 			return (
@@ -107,13 +113,13 @@ defineElement(lottie.loadAnimation)
 							} `}>
 							<div
 								className={`up hover:bg-gradient-radial from-black/10 via-transparent to-transparent rounded-full h-fit aspect-square hover:scale-110 duration-300 ease-in-out transition-all ${
-									isUpArrowDisabled(Slide)
+									isUpArrowDisabled(parseFloat(Slide).toFixed(1))
 										? disabled === "50Percent"
-											? "opacity-50 cursor-not-allowed bg-gray-500/10" // disabled set to 50% opacity
-											: "opacity-0 " // disabled set to hidden
+											? "opacity-50 cursor-not-allowed bg-gray-500/10 pointer-events-none" // disabled set to 50% opacity
+											: "opacity-0 pointer-events-none" // disabled set to hidden
 										: "opacity-100 cursor-pointer text-sky-500 hover:text-sky-400"
 								}`}
-								disabled={isUpArrowDisabled(Slide)}
+								disabled={isUpArrowDisabled(parseFloat(Slide).toFixed(1))}
 								onClick={() => {
 									setBtnClicked("up")
 									handleArrowClick("-v1")
@@ -125,20 +131,20 @@ defineElement(lottie.loadAnimation)
 											? disabled === "50Percent"
 												? "opacity-50 cursor-not-allowed bg-gray-500/10" // disabled set to 50% opacity
 												: "opacity-0 " // disabled set to hidden
-											: "cursor-pointer opacity-100 text-sky-500 duration-300 ease-in-out transition-all hover:text-sky-400 active:scale-100"
+											: "cursor-pointer opacity-100 text-sky-500 duration-300 hover:-translate-y-1  ease-in-out transition-all hover:text-sky-400 active:scale-100"
 									}
 								/>
 								<div className={`arrow-up ${Slide === 0 ? "text-gray-500/10" : "text-sky-500"}`} />
 							</div>
 							<div
 								className={`down hover:bg-gradient-radial from-black/10 via-transparent to-transparent rounded-full h-fit aspect-square hover:scale-110 duration-300 ease-in-out transition-all ${
-									isDownArrowDisabled(Slide)
+									isDownArrowDisabled(parseFloat(Slide).toFixed(1))
 										? disabled === "50Percent"
-											? "opacity-50 cursor-not-allowed bg-gray-500/10" // disabled set to 50% opacity
-											: "opacity-0 " // disabled set to hidden
+											? "opacity-50 cursor-not-allowed bg-gray-500/10 pointer-events-none" // disabled set to 50% opacity
+											: "opacity-0 pointer-events-none" // disabled set to hidden
 										: "opacity-100 cursor-pointer text-sky-500 hover:text-sky-400"
 								}`}
-								disabled={isDownArrowDisabled(Slide)}
+								disabled={isDownArrowDisabled(parseFloat(Slide).toFixed(1))}
 								onClick={() => {
 									setBtnClicked("down")
 									handleArrowClick("v1")
@@ -146,11 +152,11 @@ defineElement(lottie.loadAnimation)
 								<FontAwesomeIcon
 									icon={faChevronDown}
 									className={
-										isDownArrowDisabled(Slide)
+										isDownArrowDisabled(parseFloat(Slide).toFixed(1))
 											? disabled === "50Percent"
 												? "opacity-50 cursor-not-allowed bg-gray-500/10 h-0 w-0 ml-96" // disabled set to 50% opacity
 												: "opacity-0 " // disabled set to hidden
-											: "opacity-100 cursor-pointer text-sky-500 hover:-translate-x-1 duration-300 ease-in-out transition-all hover:text-sky-400 active:scale-100"
+											: "opacity-100 cursor-pointer text-sky-500 hover:translate-y-1 duration-300 ease-in-out transition-all hover:text-sky-400 active:scale-100"
 									}
 								/>
 								<div className={`arrow-down ${Slide === totalSlides ? "text-gray-500/10" : "text-sky-500"}`} />
@@ -160,13 +166,13 @@ defineElement(lottie.loadAnimation)
 							{/* Left Arrow */}
 							<div
 								className={`left w-fit pointer-events-auto hover:bg-gradient-radial from-black/10 via-transparent to-transparent rounded-full h-fit aspect-square hover:scale-110 hover:mt-0.5 duration-300 ease-in-out transition-all ${
-									isLeftArrowDisabled(Slide)
+									isLeftArrowDisabled(parseFloat(Slide).toFixed(1))
 										? disabled === "50Percent"
-											? "opacity-50 cursor-not-allowed bg-gray-500/10" // disabled set to 50% opacity
-											: "opacity-0 " // disabled set to hidden
+											? "opacity-50 cursor-not-allowed bg-gray-500/10 pointer-events-none" // disabled set to 50% opacity
+											: "opacity-0 pointer-events-none" // disabled set to hidden
 										: "opacity-100 cursor-pointer text-sky-500 hover:text-sky-400"
 								}`}
-								disabled={isLeftArrowDisabled(Slide)}
+								disabled={isLeftArrowDisabled(parseFloat(Slide).toFixed(1))}
 								onClick={() => {
 									setBtnClicked("left")
 									handleArrowClick(-1)
@@ -174,7 +180,7 @@ defineElement(lottie.loadAnimation)
 								<FontAwesomeIcon
 									icon={faChevronLeft}
 									className={
-										isLeftArrowDisabled(Slide)
+										isLeftArrowDisabled(parseFloat(Slide).toFixed(1))
 											? disabled === "50Percent"
 												? "opacity-50 cursor-not-allowed bg-gray-500/10 h-0 w-0 ml-96" // disabled set to 50% opacity
 												: "opacity-0 " // disabled set to hidden
@@ -185,14 +191,14 @@ defineElement(lottie.loadAnimation)
 							</div>
 							{/* Right Arrow */}
 							<div
-								className={`right w-fit pointer-events-auto hover:translate-x-1 hover:bg-gradient-radial from-black/10 via-transparent to-transparent rounded-full h-fit aspect-square hover:scale-110 hover:mt-0.5 duration-300 ease-in-out transition-all ${
-									isRightArrowDisabled(Slide)
+								className={`right w-fit hover:translate-x-1 hover:bg-gradient-radial from-black/10 via-transparent to-transparent rounded-full h-fit aspect-square hover:scale-110 hover:mt-0.5 duration-300 ease-in-out transition-all ${
+									isRightArrowDisabled(parseFloat(Slide).toFixed(1))
 										? disabled === "50Percent"
-											? "opacity-50 cursor-not-allowed bg-gray-500/10" // disabled set to 50% opacity
-											: "opacity-0 " // disabled set to hidden
-										: "opacity-100 "
+											? "opacity-50 cursor-not-allowed bg-gray-500/10 pointer-events-none" // disabled set to 50% opacity
+											: "opacity-0 pointer-events-none" // disabled set to hidden
+										: "opacity-100 pointer-events-auto"
 								}`}
-								disabled={isRightArrowDisabled(Slide)}
+								disabled={isRightArrowDisabled(parseFloat(Slide).toFixed(1))}
 								onClick={() => {
 									setBtnClicked("right")
 									handleArrowClick(1)
@@ -202,8 +208,8 @@ defineElement(lottie.loadAnimation)
 									className={
 										isRightArrowDisabled(Slide)
 											? disabled === "50Percent"
-												? "opacity-50 cursor-not-allowed bg-gray-500/10" // disabled set to 50% opacity
-												: "opacity-0 " // disabled set to hidden
+												? "opacity-50 cursor-not-allowed bg-gray-500/10 pointer-events-none" // disabled set to 50% opacity
+												: "opacity-0 pointer-events-none" // disabled set to hidden
 											: "cursor-pointer opacity-100 text-sky-500 duration-300 ease-in-out transition-all hover:text-sky-400 active:scale-100"
 									}
 								/>
