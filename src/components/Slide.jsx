@@ -1,8 +1,7 @@
+import { Children } from "react"
 
-const Slide = ({}) => {
-  return (
-    <div>Slide</div>
-  )
+const Slide = ({ children }) => {
+	return <div className={`w-full h-full Slide`}>{children}</div>
 }
 
 export default Slide

@@ -1,7 +1,21 @@
 import React from "react"
+import VerticalSlide from "../components/VerticalSlide"
+import Slide from "../components/Slide"
 
 const Slide3 = () => {
-	return <div className=" bg-orange-500 h-full">Slide3</div>
+	return (
+		<VerticalSlide>
+			<Slide>
+				<div className="h-full bg-orange-500">Slide3.0</div>
+			</Slide>
+			<Slide>
+				<div className="h-full text-black bg-white">Slide3.1</div>
+			</Slide>
+			<Slide>
+				<div className="h-full text-black bg-slate-200">Slide3.2</div>
+			</Slide>
+		</VerticalSlide>
+	)
 }
 
 export default Slide3
