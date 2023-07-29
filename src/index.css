@@ -62,6 +62,11 @@
     cursor: pointer;
     transition: border-color 0.25s;
     }
+
+    button.up, button.down, button.right, button.left {
+        padding: 0;;
+    }
+
     button:hover {
     border-color: #646cff;
     }

@@ -5,8 +5,12 @@ import VerticalSlide from "../components/VerticalSlide.jsx"
 const Slide5 = () => {
 	return (
 		<VerticalSlide>
-			<Slide className="bg-orange-500">Slide5.0</Slide>
-			<Slide className="text-black bg-white">Slide5.1</Slide>
+			<Slide>
+				<div className="h-full bg-teal-500 ">Slide5.0</div>
+			</Slide>
+			<Slide>
+				<div className="h-full text-black bg-white">Slide5.1</div>
+			</Slide>
 		</VerticalSlide>
 	)
 }

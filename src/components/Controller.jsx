@@ -111,8 +111,8 @@ defineElement(lottie.loadAnimation)
 									? "opacity-0 h-0 w-0 "
 									: "vertical justify-between flex flex-col absolute h-full w-fit mx-auto align-middle -ml-0.5"
 							} `}>
-							<div
-								className={`up hover:bg-gradient-radial from-black/10 via-transparent to-transparent rounded-full h-fit aspect-square hover:scale-110 duration-300 ease-in-out transition-all ${
+							<button
+								className={`active:scale-100 active:duration-0 bg-transparent border-none up hover:bg-gradient-radial from-black/10 via-transparent to-transparent rounded-full h-fit aspect-square hover:scale-110 duration-300 ease-in-out transition-all ${
 									isUpArrowDisabled(parseFloat(Slide).toFixed(1))
 										? disabled === "50Percent"
 											? "opacity-50 cursor-not-allowed bg-gray-500/10 pointer-events-none" // disabled set to 50% opacity
@@ -131,13 +131,13 @@ defineElement(lottie.loadAnimation)
 											? disabled === "50Percent"
 												? "opacity-50 cursor-not-allowed bg-gray-500/10" // disabled set to 50% opacity
 												: "opacity-0 " // disabled set to hidden
-											: "cursor-pointer opacity-100 text-sky-500 duration-300 hover:-translate-y-1  ease-in-out transition-all hover:text-sky-400 active:scale-100"
+											: "cursor-pointer opacity-100 text-sky-500 duration-300 hover:-translate-y-0.5  ease-in-out transition-all hover:text-sky-400 active:scale-100"
 									}
 								/>
 								<div className={`arrow-up ${Slide === 0 ? "text-gray-500/10" : "text-sky-500"}`} />
-							</div>
-							<div
-								className={`down hover:bg-gradient-radial from-black/10 via-transparent to-transparent rounded-full h-fit aspect-square hover:scale-110 duration-300 ease-in-out transition-all ${
+							</button>
+							<button
+								className={`active:scale-100 active:duration-0 bg-transparent border-none down hover:bg-gradient-radial from-black/10 via-transparent to-transparent rounded-full h-fit aspect-square hover:scale-110 duration-300 ease-in-out transition-all ${
 									isDownArrowDisabled(parseFloat(Slide).toFixed(1))
 										? disabled === "50Percent"
 											? "opacity-50 cursor-not-allowed bg-gray-500/10 pointer-events-none" // disabled set to 50% opacity
@@ -156,16 +156,16 @@ defineElement(lottie.loadAnimation)
 											? disabled === "50Percent"
 												? "opacity-50 cursor-not-allowed bg-gray-500/10 h-0 w-0 ml-96" // disabled set to 50% opacity
 												: "opacity-0 " // disabled set to hidden
-											: "opacity-100 cursor-pointer text-sky-500 hover:translate-y-1 duration-300 ease-in-out transition-all hover:text-sky-400 active:scale-100"
+											: "opacity-100 cursor-pointer text-sky-500 hover:translate-y-0.5 duration-300 ease-in-out transition-all hover:text-sky-400 active:scale-100"
 									}
 								/>
 								<div className={`arrow-down ${Slide === totalSlides ? "text-gray-500/10" : "text-sky-500"}`} />
-							</div>
+							</button>
 						</div>
 						<div className="horizontal justify-between pointer-events-none flex absolute h-full w-full my-auto align-middle items-center mb-2 mt-1.5">
 							{/* Left Arrow */}
-							<div
-								className={`left w-fit pointer-events-auto hover:bg-gradient-radial from-black/10 via-transparent to-transparent rounded-full h-fit aspect-square hover:scale-110 hover:mt-0.5 duration-300 ease-in-out transition-all ${
+							<button
+								className={`active:scale-100 active:duration-0 bg-transparent border-none left w-fit pointer-events-auto hover:bg-gradient-radial from-black/10 via-transparent to-transparent rounded-full h-fit aspect-square hover:scale-110 hover:mt-0.5 duration-300 ease-in-out transition-all ${
 									isLeftArrowDisabled(parseFloat(Slide).toFixed(1))
 										? disabled === "50Percent"
 											? "opacity-50 cursor-not-allowed bg-gray-500/10 pointer-events-none" // disabled set to 50% opacity
@@ -184,14 +184,14 @@ defineElement(lottie.loadAnimation)
 											? disabled === "50Percent"
 												? "opacity-50 cursor-not-allowed bg-gray-500/10 h-0 w-0 ml-96" // disabled set to 50% opacity
 												: "opacity-0 " // disabled set to hidden
-											: "opacity-100 cursor-pointer text-sky-500 hover:-translate-x-1 duration-300 ease-in-out transition-all hover:text-sky-400 active:scale-100"
+											: "opacity-100 cursor-pointer text-sky-500 hover:-translate-x-0.5 duration-300 ease-in-out transition-all hover:text-sky-400 active:scale-100"
 									}
 								/>
 								<div className="arrow-left" />
-							</div>
+							</button>
 							{/* Right Arrow */}
-							<div
-								className={`right w-fit hover:translate-x-1 hover:bg-gradient-radial from-black/10 via-transparent to-transparent rounded-full h-fit aspect-square hover:scale-110 hover:mt-0.5 duration-300 ease-in-out transition-all ${
+							<button
+								className={`active:scale-100 active:duration-0 bg-transparent border-none right w-fit hover:translate-x-0.5 hover:bg-gradient-radial from-black/10 via-transparent to-transparent rounded-full h-fit aspect-square hover:scale-110 hover:mt-0.5 duration-300 ease-in-out transition-all ${
 									isRightArrowDisabled(parseFloat(Slide).toFixed(1))
 										? disabled === "50Percent"
 											? "opacity-50 cursor-not-allowed bg-gray-500/10 pointer-events-none" // disabled set to 50% opacity
@@ -214,7 +214,7 @@ defineElement(lottie.loadAnimation)
 									}
 								/>
 								<div className="arrow-right" />
-							</div>
+							</button>
 						</div>
 					</div>
 				</div>

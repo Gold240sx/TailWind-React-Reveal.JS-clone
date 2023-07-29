@@ -5,9 +5,15 @@ import Slide from "../components/Slide"
 const Slide3 = () => {
 	return (
 		<VerticalSlide>
-			<Slide className="bg-orange-500">Slide3.0</Slide>
-			<Slide className="text-black bg-white">Slide3.1</Slide>
-			<Slide className="text-black bg-slate-200">Slide3.2</Slide>
+			<Slide>
+				<div className="h-full bg-orange-500">Slide3.0</div>
+			</Slide>
+			<Slide>
+				<div className="h-full text-black bg-white">Slide3.1</div>
+			</Slide>
+			<Slide>
+				<div className="h-full text-black bg-slate-200">Slide3.2</div>
+			</Slide>
 		</VerticalSlide>
 	)
 }

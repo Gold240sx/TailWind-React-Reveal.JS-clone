@@ -29,7 +29,7 @@ function App() {
 		uiColor: "#42AEF8",
 		//  disabled slides cause controls: Either  50% opacity (50Percent) and gray or 0% opacity(hidden),
 		disabled: "hidden",
-		linearControls: true,
+		linearControls: false,
 		verticalSlides: true,
 		musicPlayer: true,
 	}
@@ -81,7 +81,7 @@ function App() {
 								}
 								transition={{ transition }}
 								exit={{ translateX: translation(), opacity: 0 }}
-								className={`absolute top-0  w-screen h-screen  p-0 m-0`}>
+								className="absolute top-0 w-screen h-screen p-0 m-0">
 								{/* Slide container may contain a single Slide or a Vertical Slide, hence a  slide container here */}
 								<SlideContainer />
 							</motion.div>
