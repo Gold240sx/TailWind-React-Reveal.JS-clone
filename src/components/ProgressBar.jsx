@@ -3,13 +3,11 @@ import { motion, AnimatePresence } from "framer-motion"
 import { useMap } from "../context/MapContext"
 
 const ProgressBar = ({ Slide, setSlide, totalSlides, uiColor, pageCounter, map }) => {
-	const { currentVerticalSlide } = useMap()
+    const { trueSlide } = useMap()
 	totalSlides = Math.max(...map)
 	const percent = () => {
 		return ((Slide - 1) / (totalSlides - 1)) * 100
 	}
-
-	const trueSlide = parseFloat(`${Slide}.${currentVerticalSlide}`)
 
 	return (
 		<div className="fixed bottom-0 w-screen m-0 align-bottom">

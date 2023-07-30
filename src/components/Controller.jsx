@@ -16,7 +16,7 @@ function isDecimal(num) {
 }
 
 const Controller = ({ linearControls, prev, setPrev, totalSlides, disabled, btnClicked, verticalSlides, setBtnClicked, uiColor }) => {
-	const { map, setMap, slide, setSlide, setCurrentVerticalSlide, currentVerticalSlide } = useMap()
+	const { map, setMap, slide, setSlide, trueSlide, setTrueSlide, setCurrentVerticalSlide, currentVerticalSlide } = useMap()
 	const [vStart, setVStart] = useState(0)
 
 	useEffect(() => {
@@ -26,25 +26,23 @@ const Controller = ({ linearControls, prev, setPrev, totalSlides, disabled, btnC
 	totalSlides = Math.max(...map)
 
 	const isLeftArrowDisabled = () => {
-		return slide <= 1
+		return trueSlide <= 1
 	}
 	const isRightArrowDisabled = () => {
-		// end result "false" means it will show the arrow
-		// linear controls true means that it will hide the arrow if a vertical slide is available
 		return (
-			(linearControls && map.includes(Math.round((parseFloat(slide) + 0.1) * 1e12) / 1e12)) ||
-			Math.round((parseFloat(slide) + 1) * 1e12) / 1e12 >= totalSlides
+			(linearControls && map.includes(Math.round((parseFloat(trueSlide) + 0.1) * 1e12) / 1e12)) ||
+			Math.round((parseFloat(trueSlide) + 1) * 1e12) / 1e12 >= totalSlides
 		)
 	}
 	const isUpArrowDisabled = () => {
-		return !map.includes(Math.round((parseFloat(slide) - 0.1) * 1e12) / 1e12)
+		return !map.includes(Math.round((parseFloat(trueSlide) - 0.1) * 1e12) / 1e12)
 	}
 	const isDownArrowDisabled = () => {
-		return !map.includes(Math.round((parseFloat(slide) + 0.1) * 1e12) / 1e12)
+		return !map.includes(Math.round((parseFloat(trueSlide) + 0.1) * 1e12) / 1e12)
 	}
 
 	const handleArrowClick = (delta) => {
-		if (!isDecimal(slide)) {
+		if (!isDecimal(trueSlide)) {
 			setSlide(Math.floor(slide))
 		}
 
@@ -53,6 +51,7 @@ const Controller = ({ linearControls, prev, setPrev, totalSlides, disabled, btnC
 				window.scrollTo({
 					top: 0,
 				})
+
 				setSlide((slide) => (parseFloat(slide) - 0.1).toFixed(1))
 			} else {
 				setSlide(1)
@@ -71,31 +70,19 @@ const Controller = ({ linearControls, prev, setPrev, totalSlides, disabled, btnC
 				setSlide(Math.floor(totalSlides))
 				return
 			} else {
-				// setSlide((Slide) => (parseFloat(Slide) + 0.1).toFixed(1))
-				// Update the currentSlide index when entering a vertical slide
 				if (verticalSlides && map.includes(slide)) {
-					// const verticalSlideIndex = map.indexOf(slide)
-					// console.log(verticalSlideIndex)
-					console.log("down")
 					setCurrentVerticalSlide(currentVerticalSlide + 1)
-					console.log(currentVerticalSlide)
 				}
 
-				// Scroll vertically by 100vh when "down" arrow is clicked
 				window.scrollTo({
-					// round to the nearest 100vh before adding window.innerHeight
 					top: scrollAmount,
 					behavior: "smooth",
 				})
 			}
 		} else if (delta === "-v1") {
-			// setSlide((Slide) => (parseFloat(Slide) - 0.1).toFixed(1))
 			const scrollAmount = Math.floor((window.scrollY - window.innerHeight) / window.innerHeight) * window.innerHeight
-			// Scroll vertically by -100vh when "up" arrow is clicked
 			if (verticalSlides && map.includes(slide)) {
-				console.log("up")
-				// const verticalSlideIndex = map.indexOf(slide)
-				setCurrentVerticalSlide(currentVerticalSlide - 1) // Move to the previous slide within the vertical slide
+				setCurrentVerticalSlide(currentVerticalSlide - 1)
 			}
 
 			window.scrollTo({
@@ -113,15 +100,21 @@ const Controller = ({ linearControls, prev, setPrev, totalSlides, disabled, btnC
 				window.scrollTo({
 					top: 0,
 				})
+
 				setSlide(Math.floor(parseFloat(slide)) + delta)
 			} else if (delta === -1) {
 				window.scrollTo({
 					top: 0,
 				})
-				setSlide(Math.ceil(parseFloat(slide)) + delta)
+				if (isDecimal(trueSlide)) {
+					setTrueSlide(Math.ceil(parseFloat(slide)) + delta + 1)
+					setSlide(Math.ceil(parseFloat(slide)) + delta + 1)
+				} else {
+					setSlide(Math.ceil(parseFloat(slide)) + delta)
+				}
 			}
 		} else {
-			//error
+			// error
 			console.log(slide, delta, totalSlides)
 			console.log("disabled")
 		}

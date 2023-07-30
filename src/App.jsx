@@ -12,7 +12,7 @@ function App() {
 	const [btnClicked, setBtnClicked] = useState("load")
 	const { map, slide, setSlide } = useMap()
 	const [currentSlideCount, setCurrentSlideCount] = useState(1)
-	const [currentVerticalSlide, setCurrentVerticalSlide] = useState(0)
+    const { currentVerticalSlide } = useMap()
 
 	const transition = {
 		duration: 0.5,
@@ -69,14 +69,12 @@ function App() {
 								initial={{
 									opacity: 0,
 									translateX: translation(),
-									scale: index + 1 === slide ? 1 : 1 / currentSlideCount, // Set the scale based on the currentSlideCount
 								}}
 								animate={
 									index === slide - 1
 										? {
 												opacity: 1,
 												translateX: "0",
-												scale: index + 1 === slide ? 1 : 1 / currentSlideCount, // Set the scale based on the currentSlideCount
 										  }
 										: {}
 								}
