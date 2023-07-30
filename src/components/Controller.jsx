@@ -15,6 +15,8 @@ function isDecimal(num) {
 	return (num ^ 0) !== num / 1
 }
 
+const isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor)
+
 const Controller = ({ linearControls, prev, setPrev, totalSlides, disabled, btnClicked, verticalSlides, setBtnClicked, uiColor }) => {
 	const { map, setMap, slide, setSlide, trueSlide, setTrueSlide, setCurrentVerticalSlide, currentVerticalSlide } = useMap()
 	const [vStart, setVStart] = useState(0)
@@ -74,10 +76,17 @@ const Controller = ({ linearControls, prev, setPrev, totalSlides, disabled, btnC
 					setCurrentVerticalSlide(currentVerticalSlide + 1)
 				}
 
-				window.scrollTo({
-					top: scrollAmount,
-					behavior: "smooth",
-				})
+				if (isChrome) {
+					window.scrollTo({
+						top: ((window.scrollY + window.innerHeight) / window.innerHeight) * window.innerHeight,
+						behavior: "smooth",
+					})
+				} else {
+					window.scrollTo({
+						top: scrollAmount,
+						behavior: "smooth",
+					})
+				}
 			}
 		} else if (delta === "-v1") {
 			const scrollAmount = Math.floor((window.scrollY - window.innerHeight) / window.innerHeight) * window.innerHeight
@@ -85,10 +94,17 @@ const Controller = ({ linearControls, prev, setPrev, totalSlides, disabled, btnC
 				setCurrentVerticalSlide(currentVerticalSlide - 1)
 			}
 
-			window.scrollTo({
-				top: scrollAmount,
-				behavior: "smooth",
-			})
+			if (isChrome) {
+				window.scrollTo({
+					top: ((window.scrollY - window.innerHeight) / window.innerHeight) * window.innerHeight,
+					behavior: "smooth",
+				})
+			} else {
+				window.scrollTo({
+					top: scrollAmount,
+					behavior: "smooth",
+				})
+			}
 		} else if (slide >= 1 && slide <= totalSlides) {
 			if (parseFloat(slide) + delta > totalSlides) {
 				window.scrollTo({
