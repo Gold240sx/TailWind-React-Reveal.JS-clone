@@ -6,7 +6,7 @@ const ProgressBar = ({ Slide, setSlide, totalSlides, uiColor, pageCounter, map }
     const { trueSlide } = useMap()
 	totalSlides = Math.max(...map)
 	const percent = () => {
-		return ((Slide - 1) / (totalSlides - 1)) * 100
+		return ((trueSlide - 1) / (totalSlides - 1)) * 100
 	}
 
 	return (
