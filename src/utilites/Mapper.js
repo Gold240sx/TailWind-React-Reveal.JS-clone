@@ -25,26 +25,23 @@ export const Mapper = (collection) => {
 				// Find the maximum value within the filteredSlides array
 				const max = Math.max(...filteredSlides)
 
-				// Calculate the newMax by adding 0.1 to the maximum value
-				const newMax = max + 0.1
-
 				// Push the filteredSlides array to the vSlideArray
 				vSlideArray.push(...filteredSlides)
 
-				// Push the newMax as a number (not a string) to the vSlideArray
-				vSlideArray.push(parseFloat(newMax.toFixed(1)))
+				// Push the max as a number (not a string) to the vSlideArray
+				vSlideArray.push(parseFloat(max.toFixed(1)))
 
-				// Store the parentId and newMax in the map for future reference
-				processedParentIds.get(parentId).push(newMax)
+				// Store the parentId and max in the map for future reference
+				processedParentIds.get(parentId).push(max)
 			}
 		} else {
-			// If parentId has been processed before, get its previous newMax value
+			// If parentId has been processed before, get its previous max value
 			const previousMax = Math.max(...processedParentIds.get(parentId))
-			const newMax = previousMax + 0.1
-			vSlideArray.push(parseFloat(newMax.toFixed(1)))
+			const max = previousMax + 0.1
+			vSlideArray.push(parseFloat(max.toFixed(1)))
 
-			// Update the parentId entry in the map with the newMax value
-			processedParentIds.get(parentId).push(newMax)
+			// Update the parentId entry in the map with the max value
+			processedParentIds.get(parentId).push(max)
 		}
 	})
 

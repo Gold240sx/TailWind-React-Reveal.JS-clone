@@ -5,3 +5,5 @@ Consider rewiting the formatting for the slides to more similarly be like a caro
 Fix the initial animation of the slides. It should slide in, not fade in. 
 
 Add a requiredAction property. const [requiredAction, setRequiredAction] = useState(true) to disable the controls until the user has done something. 
+
+chrome button outline is  aweful as well
