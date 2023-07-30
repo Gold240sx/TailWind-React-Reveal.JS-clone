@@ -1,36 +1,24 @@
-import { Children, useState } from "react"
+import { Children, useState, useEffect } from "react"
+import { useMap } from "../context/MapContext"
 
-const VerticalSlide = ({ children, map }) => {
-	const [slideCount, setSlideCount] = useState(0)
+const VerticalSlide = ({ children }) => {
+	const { map, slide } = useMap()
 	const [vSlideHeight, setVSlideHeight] = useState("100vh")
-	// Convert children to an array if it's not already an array
 
-	const refs = document.querySelectorAll(` .VerticalSlide .Slide`)
-	const refCount = refs.length
+	useEffect(() => {
+		// Count the number of times slide is found as a root number in the map array
+		const count = map.filter((val) => Math.floor(val) === slide).length
 
-	refs.forEach((ref) => {
-		// get parent's parent's id
-		const vSlideParent = ref?.parentNode?.parentNode
-		console.log(vSlideParent)
-		console.log(vSlideParent?.id)
-		ref.style.height = "100vh"
-		console.log(refCount)
-		// vSlide.style.height = "80vh"
+		// Calculate the height based on the number of matches
+		const height = Math.max(100 + (count - 1) * 100, 100)
+		setVSlideHeight(height)
+	}, [map, slide])
 
-		// vSlide.parentNode.classList.remove("overflow-y-hidden")
-		// vSlide.parentNode.classList.add("overflow-y-none")
-		// vSlide.style.height = "100vh"
-	})
-
-	// const slideHeight = childrenArray.length * 100
-	// Loop through the children and check if they are divs with className === "slides"
-	// childrenArray.forEach((child) => {
-	// if (child.props.className === "Slide") {
-	// 	count++
-	// }
-	// console.log(slideHeight)
-
-	return <div className={`w-full h-[${vSlideHeight}vh] VerticalSlide`}>{children}</div>
+	return (
+		<div className={`w-full VerticalSlide`} style={{ height: vSlideHeight + "vh" }}>
+			{children}
+		</div>
+	)
 }
 
 export default VerticalSlide

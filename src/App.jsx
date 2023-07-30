@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { Mapper } from "./utilites/Mapper"
+import { useMap } from "./context/MapContext"
 import ProgressBar from "./components/progressBar"
 import Controller from "./components/Controller"
 import Slides from "./components/Slides"
@@ -8,14 +8,11 @@ import MusicPlayer from "./components/MusicPlayer"
 
 function App() {
 	const [prev, setPrev] = useState(0)
-	const [slide, setSlide] = useState(1)
 	const [totalSlides, setTotalSlides] = useState(Slides.length)
 	const [btnClicked, setBtnClicked] = useState("load")
-	const [map, setMap] = useState(
-		Slides.map((slides, index) => {
-			return parseFloat(index + 1).toFixed(0)
-		})
-	)
+	const { map, slide, setSlide } = useMap()
+	const [currentSlideCount, setCurrentSlideCount] = useState(1)
+    const { currentVerticalSlide } = useMap()
 
 	const transition = {
 		duration: 0.5,
@@ -50,22 +47,24 @@ function App() {
 		}
 	}
 
+	function countSlidesWithSameFloatNumber(slide, map) {
+		const floatNumber = Math.floor(slide)
+		return map.filter((s) => Math.floor(s) === floatNumber).length
+	}
+
 	useEffect(() => {
-		// Create map array of all slides. (horizontal slides as whole numbers and
-		// vertcal slide children as decimals)
-		//This defines the boundaries of controls and progress bar
-		setMap(Mapper(map))
-		// console.log(map) Preview only - may result in unloaded state.
-	}, [])
+		const count = countSlidesWithSameFloatNumber(slide, map)
+		setCurrentSlideCount(count)
+	}, [slide, map])
 
 	return (
 		<>
-			<div className="flex justify-center w-screen h-screen max-h-screen p-0 m-0 overflow-y-hidden text-center">
+			<div className="flex justify-center w-screen h-screen max-h-screen p-0 m-0 text-center">
 				<div className={`relative h-full pres-container w-full p-0 m-0 `}>
-					{Slides.map((SlideContainer, index) => {
+					{Slides().map((SlideContainer, index) => {
 						return (
 							<motion.div
-								key={slide.id}
+								key={index}
 								id={index + 1}
 								initial={{
 									opacity: 0,
