@@ -8,6 +8,7 @@ Developer: Michael Martell
 3. Understanding the project
 4. Cutomization Options
 5. Feature Requests, Notes and Bugs
+6. Keyboard Controls
 
 ## What is this app and why does it exist?
 Ever wanted to work on an app with the familiarity and expandability of a React app, while enabling Tailwind for a better developer experience without having to sacrifice on the quality user experiece you find with Reveal.JS? 
@@ -104,6 +105,25 @@ As stated above, customization options are located at the very top of the app fi
  ## Feature Requests, Notes and Bugs
 Feature requests, Notes to myself and bug reporting is currently located in the Notes.md file in the src (root) folder. See there for more.
 
+# Keyboard Controls + Shortcuts
+#### Key: "r":     Reset presentation. Go to slide 1
+#### Key: "m":   Open Presentation Map. Quick Select from slides. See them all visually and in order.
+#### Key: "a":    Admin Login panel/screen
+#### Key: "n":    (Toggle) Notifications On/Off
+#### Key: "p":    (Open) Preference Panel
+
+```
+		else if (event.key === "r") {
+				setSlide(1)
+				setCurrentVerticalSlide(0)
+			} else if (event.key === "m") {
+				// open Map
+			} else if (event.key === "a") {
+				// sign in as admin (to login screen)
+			} else if (event.key === "n") {
+				// toggle notifications on/off
+			} else if (event.key === "p") ...
+```
 
 ## Disclaimer
 I consider myself a mid-level React Dev. Therefore, I'm confident seasoned devs will find faster and more concise ways of implemeting what is already built. I welcome open source community involvement so if you have suggestions, get in touch with me at 240designworks@gmail.com . I in no way seek to impersonate or discredit the incredible work that Reveal.Js has put into their product, and I recognise my version isn't for everyone. 
