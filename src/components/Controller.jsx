@@ -7,22 +7,83 @@ import lottie from "lottie-web"
 import { defineElement } from "lord-icon-element"
 import { useEffect, useState } from "react"
 import { useMap } from "../context/MapContext"
+import { ScrollToSmooth } from "../utilites/animations/SmoothScrollToBottom"
+import { isDecimal } from "../utilites/IsDecimal"
 
 // define "lord-icon" custom element with default properties
 defineElement(lottie.loadAnimation)
 
-function isDecimal(num) {
-	return (num ^ 0) !== num / 1
-}
-
 const isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor)
 
-const Controller = ({ linearControls, prev, setPrev, totalSlides, disabled, btnClicked, verticalSlides, setBtnClicked, uiColor }) => {
-	const { map, setMap, slide, setSlide, trueSlide, setTrueSlide, setCurrentVerticalSlide, currentVerticalSlide } = useMap()
-	const [vStart, setVStart] = useState(0)
+if (isChrome) {
+	// console.log(`Chrome InnerHeight: ${window.innerHeight} `)
+} else {
+	// console.log(`Safari InnerHeight: ${window.innerHeight} `)
+}
+
+const Controller = ({ linearControls, setPrev, totalSlides, disabled, verticalSlides, setBtnClicked, uiColor }) => {
+	const { map, slide, setSlide, trueSlide, setTrueSlide, setCurrentVerticalSlide, currentVerticalSlide } = useMap()
+	const [upButtonHeld, setUpButtonHeld] = useState(false)
+	const [downButtonHeld, setDownButtonHeld] = useState(false)
+
+	const count = map.filter((val) => Math.floor(val) === slide).length
 
 	useEffect(() => {
 		!isDecimal(slide) ? setSlide(Math.floor(slide)) : setSlide(slide)
+		window.scrollTo({ top: 0 })
+
+		const handleKeyPress = (event) => {
+			if (event.key === "ArrowLeft") {
+				event.preventDefault()
+				handleArrowClick(-1)
+			} else if (event.key === "ArrowRight") {
+				event.preventDefault()
+				handleArrowClick(1)
+			}
+			// else if (event.key === "ArrowUp") {
+			// 	event.preventDefault()
+			// 	handleArrowClick("-v1")
+			// } else if (event.key === "ArrowDown") {
+			// 	event.preventDefault()
+			// 	handleArrowClick("v1")
+			// }
+			//  else if (event.key === "ArrowUp") {
+			// 	event.preventDefault()
+			// 	if (!isUpArrowDisabled(parseFloat(slide).toFixed(1))) {
+			// 		handleArrowClick("-v1")
+			// 	} else {
+			// 		console.error("Up arrow is disabled.")
+			// 	}
+			// } else if (event.key === "ArrowDown") {
+			// 	event.preventDefault()
+			// 	if (!isDownArrowDisabled(parseFloat(slide).toFixed(1))) {
+			// 		handleArrowClick("v1")
+			// 	} else {
+			// 		console.error("Down arrow is disabled.")
+			// 		console.log(Math.round((parseFloat(trueSlide) + 1) * 1e12) / 1e12 >= totalSlides)
+			// 	}
+			// }
+			else if (event.key === "r") {
+				setSlide(1)
+				setCurrentVerticalSlide(0)
+			} else if (event.key === "m") {
+				// open Map
+			} else if (event.key === "a") {
+				// sign in as admin (to login screen)
+			} else if (event.key === "n") {
+				// toggle notifications on/off
+			} else if (event.key === "p") {
+				// open temporary preferences (permanent prefs might be
+				// gotten via a database / local storage)
+			}
+		}
+
+		document.addEventListener("keydown", handleKeyPress)
+
+		// Clean up the event listener when the component unmounts
+		return () => {
+			document.removeEventListener("keydown", handleKeyPress)
+		}
 	}, [slide])
 
 	totalSlides = Math.max(...map)
@@ -40,6 +101,7 @@ const Controller = ({ linearControls, prev, setPrev, totalSlides, disabled, btnC
 		return !map.includes(Math.round((parseFloat(trueSlide) - 0.1) * 1e12) / 1e12)
 	}
 	const isDownArrowDisabled = () => {
+		// return false
 		return !map.includes(Math.round((parseFloat(trueSlide) + 0.1) * 1e12) / 1e12)
 	}
 
@@ -73,14 +135,22 @@ const Controller = ({ linearControls, prev, setPrev, totalSlides, disabled, btnC
 				return
 			} else {
 				if (verticalSlides && map.includes(slide)) {
-					setCurrentVerticalSlide(currentVerticalSlide + 1)
+					// setCurrentVerticalSlide(currentVerticalSlide + 1)
 				}
-
 				if (isChrome) {
-					window.scrollTo({
-						top: ((window.scrollY + window.innerHeight) / window.innerHeight) * window.innerHeight,
-						behavior: "smooth",
-					})
+					const floatmatches = map.filter((s) => Math.floor(s) === Math.floor(slide))
+					const vSlide = currentVerticalSlide + 1
+					const targetSlide = document.getElementById(`${slide}v${vSlide}`)
+					// if the current slide is == to the last vertical slide in the map... (override)
+					if (Math.round((parseFloat(trueSlide) + 0.1) * 1e12) / 1e12 === Math.max(...floatmatches)) {
+						const fullHeight = count * window.innerHeight
+						ScrollToSmooth(fullHeight, 1000)
+					} else if (targetSlide) {
+						console.log(targetSlide)
+						targetSlide.scrollIntoView({ behavior: "smooth", block: "end" })
+					} else {
+						console.log("could not find target slide")
+					}
 				} else {
 					window.scrollTo({
 						top: scrollAmount,
@@ -91,14 +161,18 @@ const Controller = ({ linearControls, prev, setPrev, totalSlides, disabled, btnC
 		} else if (delta === "-v1") {
 			const scrollAmount = Math.floor((window.scrollY - window.innerHeight) / window.innerHeight) * window.innerHeight
 			if (verticalSlides && map.includes(slide)) {
-				setCurrentVerticalSlide(currentVerticalSlide - 1)
+				// setCurrentVerticalSlide(currentVerticalSlide - 1)
 			}
 
 			if (isChrome) {
-				window.scrollTo({
-					top: ((window.scrollY - window.innerHeight) / window.innerHeight) * window.innerHeight,
-					behavior: "smooth",
-				})
+				const vSlide = currentVerticalSlide - 1
+				const targetSlide = document.getElementById(`${slide}v${vSlide}`)
+				// Scroll to the target slide smoothly when the "VerticalSlide" component mounts
+				if (targetSlide) {
+					targetSlide.scrollIntoView({ behavior: "smooth", block: "end" })
+				} else {
+					console.log("could not find target slide")
+				}
 			} else {
 				window.scrollTo({
 					top: scrollAmount,
@@ -135,9 +209,6 @@ const Controller = ({ linearControls, prev, setPrev, totalSlides, disabled, btnC
 			console.log("disabled")
 		}
 	}
-	useEffect(() => {
-		setPrev(slide)
-	}, [slide])
 
 	return (
 		<div className="controller-container fixed text-4xl  p-1 w-[5.8rem] h-28 left-auto right-6 top-auto bottom-4">

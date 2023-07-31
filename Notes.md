@@ -1,6 +1,12 @@
+# Bugs
+1. Fix the initial animation of the slides. It should slide in, not fade in. 
+2. In Safari, the music Player isn't working.
+
+
+
 # Features
 ### Controls
-1. Add a Control by keyboard mode.
+1. Add up / down (tap per slide) hold for scroll.
 
 ### Map
 1. Add a Map of the existing slides. Open Map on "M" keypress
@@ -18,7 +24,11 @@
 1. Add styling for things like code.
 
 
-# Bugs
-1. Fix the initial animation of the slides. It should slide in, not fade in. 
-2. In Safari, the music Player isn't working.
-3. Chrome vertical slides is not animating the last available vertical slide in either direction. it's also animation much slower that Safari.
+
+# Updates
+## Beta Update (1.1 07/31/23 - MM)
+1. Fixed Vertical Height change between slides and Vertical Slides
+2. Added Vertical Scroll Option. 
+3. Added Vertical Scroll Event listener so if scrolling via mouse instead of the controller, the slide tracker will update automatically.
+4. Fixed an issue in Chrome where the controller wouldn't scroll to the last slide of a VerticalSlide
+5. Added keyboard controls.

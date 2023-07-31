@@ -1,4 +1,6 @@
 # React Tailwind Reveal.JS Clone
+Repo: https://github.com/Gold240sx/Avi-Fishing-Book
+Developer: Michael Martell
 
 ## Index
 1. What is this app and why does it exist?
@@ -88,6 +90,7 @@ As stated above, customization options are located at the very top of the app fi
 - #### disabled: "hidden" - ("50Percent" || "hidden")
 - #### linearControls: false - (boolean) While a vertical slide is available, force the user to select down to continue, guiding the user linearly and preventing unwanted skipping of slides 
 - #### verticalSlides: true - (boolean) disables Up and down buttons ( if true, up + down become available only via  keyboard controls)
+- #### verticalScroll: false - (boolean) Allow verticalScroll on VerticalSlides? False means mouse scroll will be disabled and vertical scroll becomes dependant on the arrows.
 - #### musicPlayer: true - (boolean) hides the music player. ( If false, music player will not be displayed or available)
 
 ## Cutting Weight

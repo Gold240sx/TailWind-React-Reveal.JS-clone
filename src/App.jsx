@@ -5,6 +5,7 @@ import Controller from "./components/Controller"
 import Slides from "./components/Slides"
 import { motion, AnimatePresence } from "framer-motion"
 import MusicPlayer from "./components/MusicPlayer"
+import SmoothScrollbar from "smooth-scrollbar"
 
 function App() {
 	const [prev, setPrev] = useState(0)
@@ -12,7 +13,9 @@ function App() {
 	const [btnClicked, setBtnClicked] = useState("load")
 	const { map, slide, setSlide } = useMap()
 	const [currentSlideCount, setCurrentSlideCount] = useState(1)
-    const { currentVerticalSlide } = useMap()
+	const { currentVerticalSlide } = useMap()
+
+	const vSlideHeight = currentSlideCount * 100 + "vh"
 
 	const transition = {
 		duration: 0.5,
@@ -26,12 +29,15 @@ function App() {
 		uiColor: "#42AEF8",
 		//  disabled slides cause controls: Either  50% opacity (50Percent) and gray or 0% opacity(hidden),
 		disabled: "hidden",
-		linearControls: false,
+		linearControls: true,
 		verticalSlides: true,
+		verticalScroll: true,
 		musicPlayer: true,
 	}
 
-	const { pageCounter, progressBar, controller, uiColor, disabled, verticalSlides, musicPlayer, linearControls } = slideshowOptions
+	const { setVertScroll } = useMap()
+	const { pageCounter, progressBar, controller, uiColor, disabled, verticalSlides, musicPlayer, linearControls, verticalScroll } =
+		slideshowOptions
 
 	const translation = () => {
 		if (btnClicked === "load") {
@@ -47,12 +53,15 @@ function App() {
 		}
 	}
 
-	function countSlidesWithSameFloatNumber(slide, map) {
-		const floatNumber = Math.floor(slide)
-		return map.filter((s) => Math.floor(s) === floatNumber).length
-	}
-
 	useEffect(() => {
+		setVertScroll(verticalScroll)
+
+		// Setup height of the presentation container to prevent slide overflow and grow for vertical slides
+		function countSlidesWithSameFloatNumber(slide, map) {
+			slide = slide
+			const floatNumber = Math.floor(slide)
+			return map.filter((s) => Math.floor(s) === floatNumber).length
+		}
 		const count = countSlidesWithSameFloatNumber(slide, map)
 		setCurrentSlideCount(count)
 	}, [slide, map])
@@ -60,7 +69,7 @@ function App() {
 	return (
 		<>
 			<div className="flex justify-center w-screen h-screen max-h-screen p-0 m-0 text-center">
-				<div className={`relative h-full pres-container w-full p-0 m-0 `}>
+				<div className={`relative pres-container w-full p-0 m-0 overflow-hidden`} style={{ height: vSlideHeight }}>
 					{Slides().map((SlideContainer, index) => {
 						return (
 							<motion.div
@@ -80,9 +89,9 @@ function App() {
 								}
 								transition={{ transition }}
 								exit={{ translateX: translation(), opacity: 0 }}
-								className="absolute top-0 w-screen h-screen p-0 m-0">
+								className="absolute top-0 w-screen h-screen p-0 m-0 ">
 								{/* Slide container may contain a single Slide or a Vertical Slide, hence a  slide container here */}
-								<SlideContainer />
+								<SlideContainer index={index + 1} />
 							</motion.div>
 						)
 					})}

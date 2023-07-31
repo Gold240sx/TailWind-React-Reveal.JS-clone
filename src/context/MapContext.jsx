@@ -29,6 +29,7 @@ export const MapProvider = ({ children }) => {
 	const [slide, setSlide] = useState(1) // Add currentSlide state and set its default value to 1
 	const [currentVerticalSlide, setCurrentVerticalSlide] = useState(0)
     const [trueSlide, setTrueSlide] = useState(1)
+    const [vertScroll, setVertScroll] = useState()
 
 	useEffect(() => {
 		setTrueSlide(parseFloat(`${slide}.${currentVerticalSlide}`))
@@ -40,7 +41,18 @@ export const MapProvider = ({ children }) => {
 
 	return (
 		<MapContext.Provider
-			value={{ map, setMap, slide, setSlide, currentVerticalSlide, setCurrentVerticalSlide, trueSlide, setTrueSlide }}>
+			value={{
+				map,
+				setMap,
+				slide,
+				setSlide,
+				currentVerticalSlide,
+				setCurrentVerticalSlide,
+				trueSlide,
+				setTrueSlide,
+				vertScroll,
+				setVertScroll,
+			}}>
 			{children}
 		</MapContext.Provider>
 	)
