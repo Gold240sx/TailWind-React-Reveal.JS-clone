@@ -6,6 +6,10 @@ import Slides from "./components/Slides"
 import { motion, AnimatePresence } from "framer-motion"
 import MusicPlayer from "./components/MusicPlayer"
 import SmoothScrollbar from "smooth-scrollbar"
+import SafariMusicPlayer from "./components/SafariMusicPlayer"
+import "react-jinke-music-player/assets/index.css"
+// import ReactJkMusicPlayer from "react-jinke-music-player"
+import TruePlayer from "./components/TruePlayer"
 
 function App() {
 	const [prev, setPrev] = useState(0)
@@ -13,6 +17,7 @@ function App() {
 	const [btnClicked, setBtnClicked] = useState("load")
 	const { map, slide, setSlide } = useMap()
 	const [currentSlideCount, setCurrentSlideCount] = useState(1)
+
 	const { currentVerticalSlide } = useMap()
 
 	const vSlideHeight = currentSlideCount * 100 + "vh"
@@ -66,6 +71,27 @@ function App() {
 		setCurrentSlideCount(count)
 	}, [slide, map])
 
+	const BrowserName = () => {
+		let browserName = ""
+
+		if (navigator.vendor.match(/google/i)) {
+			browserName = "chrome/blink"
+		} else if (navigator.vendor.match(/apple/i)) {
+			browserName = "safari/webkit"
+		} else if (navigator.userAgent.match(/firefox\//i)) {
+			browserName = "firefox/gecko"
+		} else if (navigator.userAgent.match(/edge\//i)) {
+			browserName = "edge/edgehtml"
+		} else if (navigator.userAgent.match(/trident\//i)) {
+			browserName = "ie/trident"
+		} else {
+			browserName = navigator.userAgent + "\n" + navigator.vendor
+		}
+		// console.log(browserName)
+		const safari = browserName === "safari/webkit"
+		return safari
+	}
+
 	return (
 		<>
 			<div className="flex justify-center w-screen h-screen max-h-screen p-0 m-0 text-center">
@@ -113,7 +139,9 @@ function App() {
 						className="fixed right-6 bottom-14 w-fit h-fit "
 					/>
 				)}
-				{musicPlayer && <MusicPlayer />}
+				{/* {!BrowserName() && <MusicPlayer />} */}
+				<SafariMusicPlayer preloadType="auto" />
+				{/* <TruePlayer timeJump={0} /> */}
 				{progressBar && (
 					<ProgressBar
 						Slide={slide}

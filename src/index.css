@@ -115,6 +115,10 @@
                 min-width: 319px;
     }
 
+    .media-control-btn:hover {
+        opacity: 1 !important;
+    }
+
     @media (prefers-reduced-motion: no-preference) {
     
     }

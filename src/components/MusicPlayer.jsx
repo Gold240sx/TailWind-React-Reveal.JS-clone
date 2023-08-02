@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import { library } from "@fortawesome/fontawesome-svg-core"
 import { faPlay, faPause } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
@@ -8,7 +8,7 @@ import positiveWay from "../assets/Music/positiveWay.mp3"
 import positiveWayCover from "../assets/Music/covers/positive-way.jpg"
 library.add(faPlay, faPause)
 
-const Playlist = [
+export const Playlist = [
 	{
 		id: 1,
 		title: "Tiny Adventure",
@@ -88,7 +88,12 @@ const MusicPlayer = () => {
 				const currentTime = audio.currentTime
 				const duration = audio.duration
 				const progressPercentage = (currentTime / duration) * 100
-				setProgress(progressPercentage)
+				if (isNaN(progressPercentage)) {
+					// If progress is NaN, force refresh cache and reload audio
+					audio.load()
+				} else {
+					setProgress(progressPercentage)
+				}
 			}
 		}, 1000)
 
@@ -100,7 +105,8 @@ const MusicPlayer = () => {
 
 	return (
 		<div className="fixed items-center flex m-0 align-bottom select-none left-8 bottom-[2rem] h-12 hover:w-[230px] delay-700 group transition-all duration-700 ease-in-out">
-			<div className="absolute flex items-center justify-center w-0 h-full pt-1 overflow-hidden text-left align-middle transition-all duration-300 ease-in-out bg-black rounded-l-none group-hover:w-3/4 left-10 rounded-3xl">
+			<p className="absolute text-base left-10 bottom-36 whitespace-nowrap">Progress: {progress}</p>
+			<div className="absolute flex items-center justify-center w-0 h-full pt-1 overflow-hidden text-left align-middle transition-all duration-300 ease-in-out rounded-l-none bg-black/60 group-hover:w-3/4 left-10 rounded-3xl">
 				<div className="flex-col mb-2 ml-6">
 					<h1 className="text-sm transition-all duration-150 ease-in delay-150 opacity-0 overflow-ellipsis group-hover:opacity-100 whitespace-nowrap">
 						{song}
@@ -108,13 +114,13 @@ const MusicPlayer = () => {
 					<p className="text-xs font-bold transition-all duration-150 ease-in delay-150 opacity-0 text-slate-500 overflow-ellipsis group-hover:opacity-100 whitespace-nowrap">
 						{artist}
 					</p>
-					<audio ref={audioRef} src={Playlist[trackNo].source} />
+					<audio key={trackNo} ref={audioRef} src={Playlist[trackNo].source} />
 					<div className="absolute bottom-0 left-0 z-10 w-full h-1 bg-gray-500">
 						<div className="h-full bg-sky-500" style={{ width: `${progress}%` }}></div>
 					</div>
 				</div>
-				<div className="object-cover mb-1 ml-auto mr-[7px] overflow-hidden transition-all duration-150 ease-in delay-150 rounded-full opacity-0 w-9 h-9 album-art group-hover:opacity-100">
-					<img src={Playlist[trackNo].cover} alt="Album cover" />
+				<div className="ml-auto mb-1 mr-[7px] p-0 overflow-hidden transition-all duration-150 ease-in delay-150 rounded-full opacity-0 w-9 h-9 album-art group-hover:opacity-100">
+					<img src={Playlist[trackNo].cover} alt="Album cover" className="aspect-square " />
 				</div>
 			</div>
 			<div

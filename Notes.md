@@ -1,6 +1,7 @@
 # Bugs
 1. Fix the initial animation of the slides. It should slide in, not fade in. 
-2. In Safari, the music Player isn't working.
+2. In Safari, the music Player isn't working. Scratch that, it works intermittantly.
+3.  duration, current time, progress states and progress bar changing as the bar changes
 
 
 
@@ -23,12 +24,18 @@
 ### Styling
 1. Add styling for things like code.
 
-
-
 # Updates
+## Beta Update (1.2 08/02/23 - MM)
+1. Tons of work completed on the music player. Still having issues in Safari, but the music does play as a playlist. 
+2. Added back/forward/30sec +/- controls and a cool button. 
+3. Added the time although the duration, current time, progress states and progress bar changing as the bar changes still needs work. 
+4. Made a pretty sweet media controls icon based upon Apple's Icon. I'm pretty proud of it.
+5. Tons of work trying to get the music player to work in Safari. If I restart my computer it will work once twice, or more but will eventually permacrash until i restart the computer. I took a look at other options but I couldn't find a HOC that appeared to fit the bill. I tried building two seperate players as well... IDK what is gonna end up happening here.
+
+
 ## Beta Update (1.1 07/31/23 - MM)
 1. Fixed Vertical Height change between slides and Vertical Slides
-2. Added Vertical Scroll Option. 
-3. Added Vertical Scroll Event listener so if scrolling via mouse instead of the controller, the slide tracker will update automatically.
-4. Fixed an issue in Chrome where the controller wouldn't scroll to the last slide of a VerticalSlide
-5. Added keyboard controls.
+1. Added Vertical Scroll Option. 
+1. Added Vertical Scroll Event listener so if scrolling via mouse instead of the controller, the slide tracker will update automatically.
+1. Fixed an issue in Chrome where the controller wouldn't scroll to the last slide of a VerticalSlide
+1. Added keyboard controls.
