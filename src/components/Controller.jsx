@@ -1,5 +1,15 @@
 import { library } from "@fortawesome/fontawesome-svg-core"
-import { faArrowUp, faArrowRight, faArrowDown, faArrowLeft, faChevronUp, faChevronDown, faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons"
+import {
+	faArrowUp,
+	faArrowRight,
+	faArrowDown,
+	faArrowLeft,
+	faChevronUp,
+	faChevronDown,
+	faChevronLeft,
+	faChevronRight,
+	faHome,
+} from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 // library.add(faArrowUp, faArrowRight, faArrowDown, faArrowLeft)
 
@@ -9,6 +19,7 @@ import { useEffect, useState } from "react"
 import { useMap } from "../context/MapContext"
 import { ScrollToSmooth } from "../utilites/animations/SmoothScrollToBottom"
 import { isDecimal } from "../utilites/IsDecimal"
+import { progress } from "framer-motion"
 
 // define "lord-icon" custom element with default properties
 defineElement(lottie.loadAnimation)
@@ -23,12 +34,11 @@ if (isChrome) {
 
 const Controller = ({ linearControls, setPrev, totalSlides, disabled, verticalSlides, setBtnClicked, uiColor }) => {
 	const { map, slide, setSlide, trueSlide, setTrueSlide, setCurrentVerticalSlide, currentVerticalSlide } = useMap()
-	const [upButtonHeld, setUpButtonHeld] = useState(false)
-	const [downButtonHeld, setDownButtonHeld] = useState(false)
 
 	const count = map.filter((val) => Math.floor(val) === slide).length
 
 	useEffect(() => {
+		// console.log(Math.max(...map))
 		!isDecimal(slide) ? setSlide(Math.floor(slide)) : setSlide(slide)
 		window.scrollTo({ top: 0 })
 
@@ -91,10 +101,29 @@ const Controller = ({ linearControls, setPrev, totalSlides, disabled, verticalSl
 	const isLeftArrowDisabled = () => {
 		return trueSlide <= 1
 	}
+
+	// useEffect(() => {
+	// 	console.log("     ")
+	// 	console.log("Right arrow will be disabled if: ")
+	// 	console.log(
+	// 		`linear controls: ${linearControls} + map includes: `,
+	// 		Math.round((parseFloat(trueSlide) + 0.1) * 1e12) / 1e12,
+	// 		map.includes(Math.floor((parseFloat(trueSlide) + 0.1) * 1e12) / 1e12)
+	// 	)
+	// 	console.log(
+	// 		"or: ",
+	// 		Math.round((parseFloat(trueSlide) + 1) * 1e12) / 1e12,
+	// 		" (trueSlide + 1) > TotalSlides: ",
+	// 		Math.round(((parseFloat(trueSlide.floor) + 1) * 1e12) / 1e12) > totalSlides
+	// 	)
+	// 	console.log(((Math.floor(parseFloat(trueSlide)) + 1) * 1e12) / 1e12, totalSlides)
+	// 	console.log("     ")
+	// }, [trueSlide])
+
 	const isRightArrowDisabled = () => {
 		return (
 			(linearControls && map.includes(Math.round((parseFloat(trueSlide) + 0.1) * 1e12) / 1e12)) ||
-			Math.round((parseFloat(trueSlide) + 1) * 1e12) / 1e12 >= totalSlides
+			((Math.floor(parseFloat(trueSlide)) + 1) * 1e12) / 1e12 > totalSlides
 		)
 	}
 	const isUpArrowDisabled = () => {
@@ -103,6 +132,9 @@ const Controller = ({ linearControls, setPrev, totalSlides, disabled, verticalSl
 	const isDownArrowDisabled = () => {
 		// return false
 		return !map.includes(Math.round((parseFloat(trueSlide) + 0.1) * 1e12) / 1e12)
+	}
+	const isHomeIconDisabled = () => {
+		return trueSlide !== Math.max(...map)
 	}
 
 	const handleArrowClick = (delta) => {
@@ -220,7 +252,9 @@ const Controller = ({ linearControls, setPrev, totalSlides, disabled, verticalSl
 							: "vertical justify-between flex flex-col absolute h-full w-fit mx-auto align-middle -ml-0.5"
 					} `}>
 					<button
-						className={`active:scale-100 active:duration-0 bg-transparent border-none up hover:bg-gradient-radial from-black/10 via-transparent to-transparent rounded-full h-fit aspect-square hover:scale-110 duration-300 ease-in-out transition-all ${
+						className={`${
+							linearControls && "opacity-50 hover:opacity-100"
+						} active:scale-100 active:duration-0 bg-transparent border-none up hover:bg-gradient-radial from-black/10 via-transparent to-transparent rounded-full h-fit aspect-square hover:scale-110 duration-300 ease-in-out transition-all ${
 							isUpArrowDisabled(parseFloat(slide).toFixed(1))
 								? disabled === "50Percent"
 									? "opacity-50 cursor-not-allowed bg-gray-500/10 pointer-events-none" // disabled set to 50% opacity
@@ -273,7 +307,9 @@ const Controller = ({ linearControls, setPrev, totalSlides, disabled, verticalSl
 				<div className="horizontal justify-between pointer-events-none flex absolute h-full w-full my-auto align-middle items-center mb-2 mt-1.5">
 					{/* Left Arrow */}
 					<button
-						className={`active:scale-100 active:duration-0 bg-transparent border-none left w-fit pointer-events-auto hover:bg-gradient-radial from-black/10 via-transparent to-transparent rounded-full h-fit aspect-square hover:scale-110 hover:mt-0.5 duration-300 ease-in-out transition-all ${
+						className={`${
+							linearControls && trueSlide !== Math.max(...map) && "opacity-50 hover:opacity-100"
+						} active:scale-100 active:duration-0 bg-transparent border-none left w-fit pointer-events-auto hover:bg-gradient-radial from-black/10 via-transparent to-transparent rounded-full h-fit aspect-square hover:scale-110 hover:mt-0.5 duration-300 ease-in-out transition-all ${
 							isLeftArrowDisabled(parseFloat(slide).toFixed(1))
 								? disabled === "50Percent"
 									? "opacity-50 cursor-not-allowed bg-gray-500/10 pointer-events-none" // disabled set to 50% opacity
@@ -319,6 +355,90 @@ const Controller = ({ linearControls, setPrev, totalSlides, disabled, verticalSl
 										? "opacity-50 cursor-not-allowed bg-gray-500/10 pointer-events-none" // disabled set to 50% opacity
 										: "opacity-0 pointer-events-none" // disabled set to hidden
 									: "cursor-pointer opacity-100 text-sky-500 duration-300 ease-in-out transition-all hover:text-sky-400 active:scale-100"
+							}
+						/>
+						<div className="arrow-right" />
+					</button>
+				</div>
+				<div className="horizontal justify-between pointer-events-none flex absolute h-full w-full my-auto align-middle items-center mb-2 mt-1.5">
+					{/* Left Arrow */}
+					<button
+						className={`${
+							linearControls && trueSlide !== Math.max(...map) && "opacity-50 hover:opacity-100"
+						} active:scale-100 active:duration-0 bg-transparent border-none left w-fit pointer-events-auto hover:bg-gradient-radial from-black/10 via-transparent to-transparent rounded-full h-fit aspect-square hover:scale-110 hover:mt-0.5 duration-300 ease-in-out transition-all ${
+							isLeftArrowDisabled(parseFloat(slide).toFixed(1))
+								? disabled === "50Percent"
+									? "opacity-50 cursor-not-allowed bg-gray-500/10 pointer-events-none" // disabled set to 50% opacity
+									: "opacity-0 pointer-events-none" // disabled set to hidden
+								: "opacity-100 cursor-pointer text-sky-500 hover:text-sky-400"
+						}`}
+						disabled={isLeftArrowDisabled(parseFloat(slide).toFixed(1))}
+						onClick={() => {
+							setBtnClicked("left")
+							handleArrowClick(-1)
+						}}>
+						<FontAwesomeIcon
+							icon={faChevronLeft}
+							className={
+								isLeftArrowDisabled(parseFloat(slide).toFixed(1))
+									? disabled === "50Percent"
+										? "opacity-50 cursor-not-allowed bg-gray-500/10 h-0 w-0 ml-96" // disabled set to 50% opacity
+										: "opacity-0 " // disabled set to hidden
+									: "opacity-100 cursor-pointer text-sky-500 hover:-translate-x-0.5 duration-300 ease-in-out transition-all hover:text-sky-400 active:scale-100"
+							}
+						/>
+						<div className="arrow-left" />
+					</button>
+					{/* Right Arrow */}
+					<button
+						className={`active:scale-100 active:duration-0 bg-transparent border-none right w-fit hover:translate-x-0.5 hover:bg-gradient-radial from-black/10 via-transparent to-transparent rounded-full h-fit aspect-square hover:scale-110 hover:mt-0.5 duration-300 ease-in-out transition-all ${
+							isRightArrowDisabled(parseFloat(slide).toFixed(1))
+								? disabled === "50Percent"
+									? "opacity-50 cursor-not-allowed bg-gray-500/10 pointer-events-none" // disabled set to 50% opacity
+									: "opacity-0 pointer-events-none" // disabled set to hidden
+								: "opacity-100 pointer-events-auto"
+						}`}
+						disabled={isRightArrowDisabled(parseFloat(slide).toFixed(1))}
+						onClick={() => {
+							setBtnClicked("right")
+							handleArrowClick(1)
+						}}>
+						<FontAwesomeIcon
+							icon={faChevronRight}
+							className={
+								isRightArrowDisabled(slide)
+									? disabled === "50Percent"
+										? "opacity-50 cursor-not-allowed bg-gray-500/10 pointer-events-none" // disabled set to 50% opacity
+										: "opacity-0 pointer-events-none" // disabled set to hidden
+									: "cursor-pointer opacity-100 text-sky-500 duration-300 ease-in-out transition-all hover:text-sky-400 active:scale-100"
+							}
+						/>
+						<div className="arrow-right" />
+					</button>
+					{/* Home Icon*/}
+					<button
+						className={`${
+							trueSlide === Math.max(...map) ? "opacity-100" : "opacity-0 hidden"
+						} active:scale-100 active:duration-0 absolute -right-2 bg-transparent border-none right w-fit hover:bg-gradient-radial from-black/10 via-transparent to-transparent rounded-full h-fit aspect-square hover:scale-110 hover:mt-0.5 duration-300 ease-in-out transition-all ${
+							isHomeIconDisabled()
+								? disabled === "50Percent"
+									? "opacity-50 cursor-not-allowed bg-gray-500/10 pointer-events-none" // disabled set to 50% opacity
+									: "opacity-0 pointer-events-none" // disabled set to hidden
+								: "opacity-100 pointer-events-auto"
+						}`}
+						disabled={isHomeIconDisabled()}
+						onClick={() => {
+							setSlide(1)
+							setCurrentVerticalSlide(0)
+						}}>
+						<FontAwesomeIcon
+							icon={faHome}
+							className={
+								isHomeIconDisabled(slide)
+									? disabled === "50Percent"
+										? "opacity-50 cursor-not-allowed bg-gray-500/10 pointer-events-none" // disabled set to 50% opacity
+										: "opacity-0 pointer-events-none" // disabled set to hidden
+									: "cursor-pointer opacity-100 text-zinc-200 bg-black/5 rounded-full p-3 duration-300 ease-in-out transition-all hover:text-sky-400 active:scale-100"
 							}
 						/>
 						<div className="arrow-right" />
